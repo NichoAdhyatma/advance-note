@@ -3,7 +3,6 @@ import {
   GoogleAuthProvider,
   UserCredential,
   createUserWithEmailAndPassword,
-  getRedirectResult,
   signInWithEmailAndPassword,
   signInWithRedirect,
   signOut,
