@@ -1,17 +1,15 @@
-import useAuth from "../hooks/auth-hooks";
-import { Button } from "flowbite-react";
+import Header from "../components/dashboard/Header";
+import DashboardLayout from "../components/layouts/MainLayout";
+import AddNoteModal from "../components/dashboard/AddNoteModal";
 
 export default function Dashboard() {
-  const { signOutUser } = useAuth();
-
-  const handleOnClick = () => {
-    signOutUser();
-  };
   return (
-    <div>
-      <Button color="failure" onClick={handleOnClick}>
-        Sign Out
-      </Button>
-    </div>
+    <DashboardLayout>
+      <Header />
+
+      <div className="flex justify-end">
+        <AddNoteModal />
+      </div>
+    </DashboardLayout>
   );
 }

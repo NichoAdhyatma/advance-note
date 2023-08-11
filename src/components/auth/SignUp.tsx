@@ -9,12 +9,11 @@ export default function SignUp() {
     email: "",
     password: "",
   });
-  const { signUp } = useAuth();
-  const [processing, setProcessing] = useState<boolean>(false);
+  const { signUp, loading } = useAuth();
 
   const handleOnClick = () => {
-    setProcessing(true);
-    signUp(data as AuthData).finally(() => setProcessing(false));
+    
+    signUp(data as AuthData);
   };
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -75,7 +74,7 @@ export default function SignUp() {
       <div className="w-full">
         <Button
           onClick={handleOnClick}
-          isProcessing={processing}
+          isProcessing={loading}
           className="w-full mt-12"
           disabled={
             data?.name.length == 0 ||

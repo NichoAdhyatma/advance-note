@@ -26,7 +26,7 @@ const useAuth = () => {
           email: authUser.email || "",
         });
 
-        navigate("/auth");
+        navigate("/dashboard");
       } else {
         navigate("/");
       }
@@ -38,16 +38,18 @@ const useAuth = () => {
 
   const signUp = async (data: AuthData) => {
     try {
+      setLoading(true);
       let user: UserCredential = await createUserWithEmailAndPassword(
         auth,
         data.email,
         data.password
-      );
+      ).finally(() => setLoading(false));
 
       if (user) {
         updateProfile(user.user, {
           displayName: data.name,
         });
+        setLoading(false);
       }
     } catch (error) {
       toast.error(`${error}`);
@@ -56,7 +58,10 @@ const useAuth = () => {
 
   const signIn = async (data: AuthData) => {
     try {
-      await signInWithEmailAndPassword(auth, data.email, data.password);
+      setLoading(true);
+      await signInWithEmailAndPassword(auth, data.email, data.password).finally(
+        () => setLoading(false)
+      );
     } catch (error) {
       toast.error(`${error}`);
     }
@@ -71,9 +76,11 @@ const useAuth = () => {
   };
 
   const googleSignIn = async () => {
+    setLoading(true);
+
     const provider = new GoogleAuthProvider();
 
-    await signInWithRedirect(auth, provider);
+    await signInWithRedirect(auth, provider).finally(() => setLoading(false));
   };
 
   return { user, loading, signIn, signUp, signOutUser, googleSignIn };

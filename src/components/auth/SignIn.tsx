@@ -11,12 +11,10 @@ export default function SignIn() {
     email: "",
     password: "",
   });
-  const { signIn, googleSignIn } = useAuth();
-  const [processing, setProcessing] = useState<boolean>(false);
+  const { signIn, googleSignIn, loading } = useAuth();
 
   const handleOnClick = () => {
-    setProcessing(true);
-    signIn(data as AuthData).finally(() => setProcessing(false));
+    signIn(data as AuthData);
   };
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -28,8 +26,7 @@ export default function SignIn() {
   };
 
   const handleGoogleSingIn = () => {
-    setProcessing(true);
-    googleSignIn().finally(() => setProcessing(false));
+    googleSignIn();
   };
 
   return (
@@ -74,7 +71,7 @@ export default function SignIn() {
       <div className="w-full flex flex-col gap-2">
         <Button
           onClick={handleOnClick}
-          isProcessing={processing}
+          isProcessing={loading}
           className="w-full"
           disabled={data?.email.length == 0 || data?.password.length == 0}
         >
@@ -84,7 +81,7 @@ export default function SignIn() {
         <Divider label="Or" />
 
         <Button
-          isProcessing={processing}
+          isProcessing={loading}
           color="gray"
           onClick={handleGoogleSingIn}
         >
