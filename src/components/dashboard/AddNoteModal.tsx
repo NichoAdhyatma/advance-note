@@ -1,14 +1,37 @@
 import { Button, Label, Modal, TextInput } from "flowbite-react";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import ReactQuill from "react-quill";
+import { NoteData } from "../../interfaces/note/note-data.model";
+import useNote from "../../hooks/note-hooks";
 import "react-quill/dist/quill.snow.css";
 
 export default function AddNoteModal() {
   const [openModal, setOpenModal] = useState<string | undefined>();
-  const [value, setValue] = useState<string>("");
+  const { addNote, data, handleEditorChange, handleTitleChange } = useNote();
   const props = { openModal, setOpenModal };
+  const quillRef: any = useRef();
 
-  const handleOnChange = (): void => {};
+  const handleOnSave = () => {
+    addNote(data as NoteData);
+  };
+
+  const modules = {
+    toolbar: [
+      [{ 'header': [1, 2, false] }],
+      ['bold', 'italic', 'underline','strike', 'blockquote'],
+      [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
+      ['link', 'image'],
+      ['clean']
+    ],
+  };
+
+  const formats = [
+    'header',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link', 'image'
+  ];
+
 
   return (
     <>
@@ -32,21 +55,26 @@ export default function AddNoteModal() {
                 type="text"
                 name="title"
                 placeholder="Ur note title here..."
-                onChange={handleOnChange}
+                onChange={handleTitleChange}
                 required
               />
             </div>
             <div>
               <ReactQuill
                 theme="snow"
-                value={value}
-                onChange={setValue}
+                value={data?.body}
+                onChange={handleEditorChange}
+                ref={(el) => {
+                  quillRef.current = el;
+                }}
+                modules={modules}
+                formats={formats}
               />
             </div>
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => props.setOpenModal(undefined)}>Create</Button>
+          <Button onClick={handleOnSave}>Create</Button>
           <Button color="gray" onClick={() => props.setOpenModal(undefined)}>
             Cancel
           </Button>

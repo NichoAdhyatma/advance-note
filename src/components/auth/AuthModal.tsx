@@ -1,6 +1,5 @@
 import { Button, Modal, Tabs } from "flowbite-react";
 import { useState } from "react";
-import { ToastContainer } from "react-toastify";
 import SingIn from "./SignIn";
 import SignUp from "./SignUp";
 
@@ -28,19 +27,6 @@ export default function AuthModal() {
           </Tabs.Group>
         </Modal.Body>
       </Modal>
-      <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        limit={3}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
     </>
   );
 }
