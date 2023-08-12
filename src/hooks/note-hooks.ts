@@ -1,29 +1,25 @@
 import {
+  doc,
   addDoc,
   collection,
   query,
   where,
-  getDocs,
-  QuerySnapshot,
-  DocumentData,
+  onSnapshot,
+  orderBy,
+  serverTimestamp,
+  deleteDoc,
 } from "firebase/firestore";
-import { auth, db } from "../conf/firebase.config";
+import { db } from "../conf/firebase.config";
 import { NoteData } from "../interfaces/note/note-data.model";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "react-toastify";
+import useAuth from "./auth-hooks";
 
 const useNote = () => {
   const [data, setData] = useState<NoteData | undefined>();
-  const [notes, setNotes] = useState<
-    QuerySnapshot<DocumentData, DocumentData> | undefined
-  >(undefined);
+  const [notes, setNotes] = useState<NoteData[] | undefined>(undefined);
 
-  const userId: string | undefined = auth.currentUser?.uid;
-
-  useEffect(() => {
-    fetchNote();
-  }, [userId]);
-
+  const { user } = useAuth();
   const handleEditorChange = (value: string) => {
     setData((prevData) => ({
       ...(prevData as NoteData),
@@ -42,15 +38,25 @@ const useNote = () => {
 
   const fetchNote = async () => {
     try {
-      if (userId) {
+      if (user?.uid) {
         const q = query(
           collection(db, "notes"),
-          where("user_id", "==", userId)
+          where("user_id", "==", user?.uid),
+          orderBy("timestamp", "desc")
         );
 
-        const querySnapshot = await getDocs(q);
-        
-        setNotes(querySnapshot);
+        onSnapshot(q, (querySnapshot) => {
+          let notesArr: NoteData[] = [];
+          querySnapshot.docs.forEach((doc) => {
+            let note: NoteData = doc.data() as NoteData;
+            note.id = doc.id;
+            notesArr.push(note);
+          });
+
+          setNotes(notesArr);
+        });
+
+        console.log(notes);
       }
     } catch (err) {
       toast.error(`${err}`);
@@ -59,18 +65,36 @@ const useNote = () => {
 
   const addNote = async (data: NoteData) => {
     try {
-      const docRef = await addDoc(collection(db, "notes"), {
-        user_id: userId,
+      await addDoc(collection(db, "notes"), {
+        user_id: user?.uid,
         title: data.title,
         body: data.body,
+        timestamp: serverTimestamp(),
       });
-      toast.success(`Note Created SuccessFully with id : ${docRef.id}`);
+      toast.success(`Note Created SuccessFully`);
     } catch (err) {
       toast.error(`${err}`);
     }
   };
 
-  return { addNote, data, handleEditorChange, handleTitleChange, fetchNote, notes };
+  const deleteNote = async (id: string) => {
+    try {
+      await deleteDoc(doc(db, "notes", id));
+      toast.success("Note Deleted SuccessFully");
+    } catch (err) {
+      toast.error(`${err}`);
+    }
+  };
+
+  return {
+    addNote,
+    deleteNote,
+    data,
+    handleEditorChange,
+    handleTitleChange,
+    fetchNote,
+    notes,
+  };
 };
 
 export default useNote;

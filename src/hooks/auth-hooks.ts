@@ -34,7 +34,7 @@ const useAuth = () => {
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [loading]);
 
   const signUp = async (data: AuthData) => {
     try {
