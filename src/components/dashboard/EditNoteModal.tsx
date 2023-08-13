@@ -1,20 +1,34 @@
 import { Button, Label, Modal, TextInput } from "flowbite-react";
-import { useState } from "react";
 import ReactQuill from "react-quill";
 import useNote from "../../hooks/note-hooks";
 import "react-quill/dist/quill.snow.css";
+import { NoteData } from "../../interfaces/note/note-data.model";
+import { useEffect } from "react";
 
 export default function EditNoteModal({
+  openModal,
+  setOpenModal,
   id,
   title,
   body,
 }: {
+  openModal?: string;
+  setOpenModal: React.Dispatch<React.SetStateAction<string | undefined>>;
   id: string;
   title: string;
   body: string;
 }) {
-  const [openModal, setOpenModal] = useState<string | undefined>();
-  const { handleEditorChange, handleTitleChange } = useNote();
+  const { handleEditorChange, handleTitleChange, data, setData, editNote } =
+    useNote();
+
+  const handleEditNote = () => {
+    editNote(id, data as NoteData).finally(() => setOpenModal(undefined));
+  };
+
+  useEffect(() => {
+    setData({ id: id, title: title, body: body } as NoteData);
+    console.log(title);
+  }, [title, id, body]);
 
   const modules = {
     toolbar: [
@@ -47,7 +61,7 @@ export default function EditNoteModal({
   return (
     <>
       <Modal
-        show={openModal === "new-note"}
+        show={openModal === id}
         size="7xl"
         onClose={() => setOpenModal(undefined)}
       >
@@ -62,7 +76,7 @@ export default function EditNoteModal({
                 id="title"
                 type="text"
                 name="title"
-                value={title}
+                defaultValue={title}
                 placeholder="Ur note title here..."
                 onChange={handleTitleChange}
                 required
@@ -71,7 +85,7 @@ export default function EditNoteModal({
             <div>
               <ReactQuill
                 theme="snow"
-                value={body}
+                defaultValue={body}
                 onChange={handleEditorChange}
                 modules={modules}
                 formats={formats}
@@ -80,7 +94,7 @@ export default function EditNoteModal({
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button>Edit</Button>
+          <Button onClick={handleEditNote}>Edit</Button>
           <Button color="gray" onClick={() => setOpenModal(undefined)}>
             Cancel
           </Button>

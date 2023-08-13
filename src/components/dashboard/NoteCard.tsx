@@ -1,9 +1,13 @@
 import { Card, Dropdown } from "flowbite-react";
 import { Parser } from "html-to-react";
 import useNote from "../../hooks/note-hooks";
-import {useState} from "react";
+import { NoteData } from "../../interfaces/note/note-data.model";
+import { auth } from "../../conf/firebase.config";
 
 export default function NoteCard(props: {
+  data?: NoteData;
+  setData: React.Dispatch<React.SetStateAction<NoteData | undefined>>;
+  setOpenModal: React.Dispatch<React.SetStateAction<string | undefined>>;
   id: string;
   title: string;
   body: any;
@@ -19,7 +23,20 @@ export default function NoteCard(props: {
     <Card>
       <div className="flex justify-end">
         <Dropdown inline label="">
-          <Dropdown.Item>
+          <Dropdown.Item
+            onClick={() => {
+              let data: NoteData = {
+                user_id: auth.currentUser!.uid,
+                id: props.id,
+                title: props.title,
+                body: props.body,
+              };
+
+              props.setData(data);
+
+              props.setOpenModal(props.id);
+            }}
+          >
             <a
               className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white"
               href="#"
@@ -40,7 +57,9 @@ export default function NoteCard(props: {
       </div>
       <div className="flex flex-col gap-2 items-center w-full max-h-[200px]">
         <h1 className="text-2xl font-bold">{props.title}</h1>
-        <div className="overflow-x-hidden min-w-full">{htmlParse.parse(props.body)}</div>
+        <div className="overflow-x-hidden min-w-full">
+          {htmlParse.parse(props.body)}
+        </div>
       </div>
     </Card>
   );

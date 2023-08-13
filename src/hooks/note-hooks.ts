@@ -8,6 +8,7 @@ import {
   orderBy,
   serverTimestamp,
   deleteDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { db } from "../conf/firebase.config";
 import { NoteData } from "../interfaces/note/note-data.model";
@@ -16,7 +17,11 @@ import { toast } from "react-toastify";
 import useAuth from "./auth-hooks";
 
 const useNote = () => {
-  const [data, setData] = useState<NoteData | undefined>();
+  const [data, setData] = useState<NoteData | undefined>({
+    id: "",
+    title: "",
+    body: "",
+  } as NoteData);
   const [notes, setNotes] = useState<NoteData[] | undefined>(undefined);
 
   const { user } = useAuth();
@@ -71,7 +76,22 @@ const useNote = () => {
         body: data.body,
         timestamp: serverTimestamp(),
       });
-      toast.success(`Note Created SuccessFully`);
+      toast.success(`Note Created Successfully`);
+    } catch (err) {
+      toast.error(`${err}`);
+    }
+  };
+
+  const editNote = async (id: string, data: NoteData) => {
+    try {
+      let noteRef = doc(db, "notes", id);
+
+      await updateDoc(noteRef, {
+        title: data.title,
+        body: data.body,
+        timestamp: serverTimestamp(),
+      });
+      toast.success("Note Edited Successfully");
     } catch (err) {
       toast.error(`${err}`);
     }
@@ -80,7 +100,7 @@ const useNote = () => {
   const deleteNote = async (id: string) => {
     try {
       await deleteDoc(doc(db, "notes", id));
-      toast.success("Note Deleted SuccessFully");
+      toast.success("Note Deleted Successfully");
     } catch (err) {
       toast.error(`${err}`);
     }
@@ -89,6 +109,8 @@ const useNote = () => {
   return {
     addNote,
     deleteNote,
+    setData,
+    editNote,
     data,
     handleEditorChange,
     handleTitleChange,
