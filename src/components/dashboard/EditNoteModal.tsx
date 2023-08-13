@@ -1,19 +1,20 @@
 import { Button, Label, Modal, TextInput } from "flowbite-react";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import ReactQuill from "react-quill";
-import { NoteData } from "../../interfaces/note/note-data.model";
 import useNote from "../../hooks/note-hooks";
 import "react-quill/dist/quill.snow.css";
 
-export default function AddNoteModal() {
+export default function EditNoteModal({
+  id,
+  title,
+  body,
+}: {
+  id: string;
+  title: string;
+  body: string;
+}) {
   const [openModal, setOpenModal] = useState<string | undefined>();
-  const { addNote, data, handleEditorChange, handleTitleChange } = useNote();
-  const props = { openModal, setOpenModal };
-  const quillRef: any = useRef();
-
-  const handleOnSave = () => {
-    addNote(data as NoteData).finally(() => props.setOpenModal(undefined));
-  };
+  const { handleEditorChange, handleTitleChange } = useNote();
 
   const modules = {
     toolbar: [
@@ -45,15 +46,12 @@ export default function AddNoteModal() {
 
   return (
     <>
-      <Button onClick={() => props.setOpenModal("new-note")}>
-        Create New Note
-      </Button>
       <Modal
-        show={props.openModal === "new-note"}
+        show={openModal === "new-note"}
         size="7xl"
-        onClose={() => props.setOpenModal(undefined)}
+        onClose={() => setOpenModal(undefined)}
       >
-        <Modal.Header>Create New Note</Modal.Header>
+        <Modal.Header>Edit your Note</Modal.Header>
         <Modal.Body>
           <div className="space-y-6">
             <div>
@@ -64,6 +62,7 @@ export default function AddNoteModal() {
                 id="title"
                 type="text"
                 name="title"
+                value={title}
                 placeholder="Ur note title here..."
                 onChange={handleTitleChange}
                 required
@@ -72,11 +71,8 @@ export default function AddNoteModal() {
             <div>
               <ReactQuill
                 theme="snow"
-                value={data?.body}
+                value={body}
                 onChange={handleEditorChange}
-                ref={(el) => {
-                  quillRef.current = el;
-                }}
                 modules={modules}
                 formats={formats}
               />
@@ -84,8 +80,8 @@ export default function AddNoteModal() {
           </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={handleOnSave}>Create</Button>
-          <Button color="gray" onClick={() => props.setOpenModal(undefined)}>
+          <Button>Edit</Button>
+          <Button color="gray" onClick={() => setOpenModal(undefined)}>
             Cancel
           </Button>
         </Modal.Footer>

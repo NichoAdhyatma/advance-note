@@ -1,6 +1,7 @@
 import { Card, Dropdown } from "flowbite-react";
 import { Parser } from "html-to-react";
 import useNote from "../../hooks/note-hooks";
+import {useState} from "react";
 
 export default function NoteCard(props: {
   id: string;
@@ -16,7 +17,7 @@ export default function NoteCard(props: {
 
   return (
     <Card>
-      <div className="flex justify-end px-4 pt-4">
+      <div className="flex justify-end">
         <Dropdown inline label="">
           <Dropdown.Item>
             <a
@@ -37,9 +38,9 @@ export default function NoteCard(props: {
           </Dropdown.Item>
         </Dropdown>
       </div>
-      <div className="flex flex-col items-center pb-10">
+      <div className="flex flex-col gap-2 items-center w-full max-h-[200px]">
         <h1 className="text-2xl font-bold">{props.title}</h1>
-        <div>{htmlParse.parse(props.body)}</div>
+        <div className="overflow-x-hidden min-w-full">{htmlParse.parse(props.body)}</div>
       </div>
     </Card>
   );
