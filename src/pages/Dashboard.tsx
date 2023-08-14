@@ -16,10 +16,7 @@ export default function Dashboard() {
   const { user } = useAuth();
 
   useEffect(() => {
-    const unsubscribe = () => fetchNote();
-    return () => {
-      unsubscribe();
-    };
+    fetchNote()
   }, [user]);
 
   return (
@@ -43,6 +40,7 @@ export default function Dashboard() {
           </div>
         ))}
       </div>
+
       <EditNoteModal
         openModal={openModal}
         id={data!.id}

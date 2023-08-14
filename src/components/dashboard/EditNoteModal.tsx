@@ -27,7 +27,6 @@ export default function EditNoteModal({
 
   useEffect(() => {
     setData({ id: id, title: title, body: body } as NoteData);
-    console.log(title);
   }, [title, id, body]);
 
   const modules = {
