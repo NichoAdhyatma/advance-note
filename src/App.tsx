@@ -19,10 +19,8 @@ function App() {
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
       <ToastContainer
-        position="top-center"
-        autoClose={5000}
-        limit={3}
-        hideProgressBar={false}
+        position="top-right"
+        hideProgressBar={true}
         newestOnTop={false}
         closeOnClick
         rtl={false}

@@ -9,11 +9,12 @@ export default function SignUp() {
     email: "",
     password: "",
   });
-  const { signUp, loading } = useAuth();
+  const { signUp } = useAuth();
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleOnClick = () => {
-    
-    signUp(data as AuthData);
+    setLoading(true);
+    signUp(data as AuthData).finally(() => setLoading(false));
   };
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>): void => {

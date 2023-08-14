@@ -11,11 +11,14 @@ export default function SignIn() {
     email: "",
     password: "",
   });
-  const { signIn, googleSignIn, loading } = useAuth();
+  const { signIn, googleSignIn } = useAuth();
 
   const handleOnClick = () => {
-    signIn(data as AuthData);
+    setLoading(true);
+    signIn(data as AuthData).finally(() => setLoading(false));
   };
+
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const { name, value } = e.target;
@@ -26,7 +29,8 @@ export default function SignIn() {
   };
 
   const handleGoogleSingIn = () => {
-    googleSignIn();
+    setLoading(true);
+    googleSignIn().finally(() => setLoading(true));
   };
 
   return (

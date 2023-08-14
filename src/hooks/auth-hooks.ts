@@ -15,7 +15,6 @@ import { useNavigate } from "react-router-dom";
 
 const useAuth = () => {
   const [user, setUser] = useState<AuthUser | null>(null);
-  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,26 +29,23 @@ const useAuth = () => {
       } else {
         navigate("/");
       }
-      setLoading(false);
     });
 
     return () => unsubscribe();
-  }, [loading]);
+  }, []);
 
   const signUp = async (data: AuthData) => {
     try {
-      setLoading(true);
       let user: UserCredential = await createUserWithEmailAndPassword(
         auth,
         data.email,
         data.password
-      ).finally(() => setLoading(false));
+      );
 
       if (user) {
         updateProfile(user.user, {
           displayName: data.name,
         });
-        setLoading(false);
       }
     } catch (error) {
       toast.error(`${error}`);
@@ -58,10 +54,7 @@ const useAuth = () => {
 
   const signIn = async (data: AuthData) => {
     try {
-      setLoading(true);
-      await signInWithEmailAndPassword(auth, data.email, data.password).finally(
-        () => setLoading(false)
-      );
+      await signInWithEmailAndPassword(auth, data.email, data.password);
     } catch (error) {
       toast.error(`${error}`);
     }
@@ -76,14 +69,12 @@ const useAuth = () => {
   };
 
   const googleSignIn = async () => {
-    setLoading(true);
-
     const provider = new GoogleAuthProvider();
 
-    await signInWithRedirect(auth, provider).finally(() => setLoading(false));
+    await signInWithRedirect(auth, provider);
   };
 
-  return { user, loading, signIn, signUp, signOutUser, googleSignIn };
+  return { user, signIn, signUp, signOutUser, googleSignIn };
 };
 
 export default useAuth;
