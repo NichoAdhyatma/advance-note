@@ -8,21 +8,8 @@ import useAuth from "../hooks/auth-hooks";
 import { useEffect } from "react";
 import EditNoteModal from "../components/dashboard/EditNoteModal";
 import useModal from "../hooks/modal-hooks";
-import { Page, Text, View, Document, StyleSheet } from "@react-pdf/renderer";
 import PDFDownloadButton from "../components/PDFDownloadButton";
 
-// Create styles
-const styles = StyleSheet.create({
-  page: {
-    flexDirection: "row",
-    backgroundColor: "#E4E4E4",
-  },
-  section: {
-    margin: 10,
-    padding: 10,
-    flexGrow: 1,
-  },
-});
 
 export default function Dashboard() {
   const { notes, fetchNote, setData, data } = useNote();
