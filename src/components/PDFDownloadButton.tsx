@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { Document, Page, Text, PDFViewer } from "@react-pdf/renderer";
+import {
+  Document,
+  Page,
+  Text,
+  PDFViewer,
+  PDFDownloadLink,
+} from "@react-pdf/renderer";
 import ContentToConvert from "./ContentToConvert";
 import { Button, Modal } from "flowbite-react";
 
@@ -15,6 +21,8 @@ const PDFDocument = () => (
 const PDFDownloadButton = () => {
   const [openModal, setOpenModal] = useState<string | undefined>();
   const props = { openModal, setOpenModal };
+
+  console.log(PDFDownloadLink);
 
   return (
     <div>
@@ -34,9 +42,18 @@ const PDFDownloadButton = () => {
           </PDFViewer>
         </Modal.Body>
         <Modal.Footer>
-          <Button onClick={() => props.setOpenModal(undefined)}>
-            Download
-          </Button>
+          <PDFDownloadLink document={<PDFDocument />} fileName="somename.pdf">
+            {({ blob, url, loading, error }) =>
+              loading ? (
+                "Loading document..."
+              ) : (
+                <a href={url!} download={true}>
+                  {" "}
+                  <Button>Download</Button>
+                </a>
+              )
+            }
+          </PDFDownloadLink>
           <Button color="gray" onClick={() => props.setOpenModal(undefined)}>
             Close
           </Button>
