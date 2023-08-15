@@ -51,7 +51,6 @@ const useNote = () => {
         );
 
         onSnapshot(q, (querySnapshot) => {
-          console.log("listen");
           let notesArr: NoteData[] = [];
           querySnapshot.docs.forEach((doc) => {
             let note: NoteData = doc.data() as NoteData;
