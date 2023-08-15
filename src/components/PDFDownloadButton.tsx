@@ -43,7 +43,7 @@ const PDFDownloadButton = () => {
         </Modal.Body>
         <Modal.Footer>
           <PDFDownloadLink document={<PDFDocument />} fileName="somename.pdf">
-            {({ blob, url, loading, error }) =>
+            {({ url, loading }) =>
               loading ? (
                 "Loading document..."
               ) : (
