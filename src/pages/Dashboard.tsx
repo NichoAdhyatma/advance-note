@@ -8,7 +8,6 @@ import useAuth from "../hooks/auth-hooks";
 import { useEffect } from "react";
 import EditNoteModal from "../components/dashboard/EditNoteModal";
 import useModal from "../hooks/modal-hooks";
-import PDFDownloadButton from "../components/PDFDownloadButton";
 
 
 export default function Dashboard() {
@@ -48,8 +47,6 @@ export default function Dashboard() {
         setOpenModal={setOpenModal}
         body={data!.body}
       />
-
-      <PDFDownloadButton />
     </DashboardLayout>
   );
 }
