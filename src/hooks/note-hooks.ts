@@ -23,6 +23,7 @@ const useNote = () => {
     body: "",
   } as NoteData);
   const [notes, setNotes] = useState<NoteData[] | undefined>(undefined);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const { user } = useAuth();
   const handleEditorChange = (value: string) => {
@@ -43,6 +44,7 @@ const useNote = () => {
 
   const fetchNote = async () => {
     try {
+      setLoading(true);
       if (user?.uid) {
         const q = query(
           collection(db, "notes"),
@@ -59,9 +61,8 @@ const useNote = () => {
           });
 
           setNotes(notesArr);
+          setLoading(false);
         });
-
-        console.log(notes);
       }
     } catch (err) {
       toast.error(`${err}`);
@@ -116,6 +117,7 @@ const useNote = () => {
     handleTitleChange,
     fetchNote,
     notes,
+    loading
   };
 };
 

@@ -10,9 +10,10 @@ import EditNoteModal from "../components/dashboard/EditNoteModal";
 import useModal from "../hooks/modal-hooks";
 
 import SearchField from "../components/dashboard/SearchField";
+import { SyncLoader } from "react-spinners";
 
 export default function Dashboard() {
-  const { notes, fetchNote, setData, data } = useNote();
+  const { notes, fetchNote, setData, data, loading } = useNote();
   const { openModal, setOpenModal } = useModal();
   const [search, setSearch] = useState<string>("");
   const { user } = useAuth();
@@ -30,6 +31,15 @@ export default function Dashboard() {
 
         <AddNoteModal />
       </div>
+
+      <SyncLoader
+        color={"#0e7ea3"}
+        loading={loading}
+        size={20}
+        className="mx-auto my-auto"
+        aria-label="Loading Spinner"
+        data-testid="loader"
+      />
 
       <div className="grid md:grid-cols-3 sm:grid-cols-1 gap-4">
         {notes?.map((note: NoteData) => {
